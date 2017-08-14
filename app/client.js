@@ -3,6 +3,7 @@ import Login from 'components/login';
 import Users from 'components/users';
 import mediator from 'components/mediator'; // instance of component
 import 'components/store';
+import 'components/voice';
 import 'components/websocket';
 
 // create instanses of ui components
