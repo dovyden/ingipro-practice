@@ -1,18 +1,18 @@
-const caniuse = require('caniuse-api');
+// const caniuse = require('caniuse-api');
 
-let LATEST_STABLE_BROWSERS = {};
-caniuse.getLatestStableBrowsers().map(browser => {
-    browser = browser.split(' ');
-    LATEST_STABLE_BROWSERS[browser[0]] = parseFloat(browser[1]);
-});
+// let LATEST_STABLE_BROWSERS = {};
+// caniuse.getLatestStableBrowsers().map(browser => {
+//     browser = browser.split(' ');
+//     LATEST_STABLE_BROWSERS[browser[0]] = parseFloat(browser[1]);
+// });
 
-function getBrowserSupportedVersion(name) {
-    const version = LATEST_STABLE_BROWSERS[name];
+// function getBrowserSupportedVersion(name) {
+//     const version = LATEST_STABLE_BROWSERS[name];
 
-    return ['chrome', 'opera', 'firefox'].includes(name)
-        ? version - 5
-        : version;
-}
+//     return ['chrome', 'opera', 'firefox'].includes(name)
+//         ? version - 5
+//         : version;
+// }
 
 module.exports = {
     plugins: [
@@ -28,9 +28,12 @@ module.exports = {
         require('postcss-hexrgba'),
         require('autoprefixer')({
             browsers: [
-                `Chrome > ${getBrowserSupportedVersion('chrome')}`,
-                `Firefox > ${getBrowserSupportedVersion('firefox')}`,
-                `Opera > ${getBrowserSupportedVersion('opera')}`,
+                // `Chrome > ${getBrowserSupportedVersion('chrome')}`,
+                // `Firefox > ${getBrowserSupportedVersion('firefox')}`,
+                // `Opera > ${getBrowserSupportedVersion('opera')}`,
+                'Chrome > 55',
+                'Firefox > 50',
+                'Opera > 41',
                 'Android > 4',
                 'Explorer > 9',
                 'iOS > 7',
