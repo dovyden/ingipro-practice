@@ -39,4 +39,6 @@ module.exports = (socket) => {
         // eslint-disable-next-line
         console.log('user disconected');
     });
+
+    console.log('user connected');
 };
