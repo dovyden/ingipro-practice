@@ -13,11 +13,11 @@ class Layout {
     }
 
     hide() {
-        this._domNode.classList.add('hide');
+        this._domNode.classList.add('layout_hide');
     }
 
     show() {
-        this._domNode.classList.remove('hide');
+        this._domNode.classList.remove('layout_hide');
     }
 }
 

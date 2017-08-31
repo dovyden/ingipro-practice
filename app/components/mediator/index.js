@@ -17,7 +17,7 @@ class Mediator {
         // type like 'user:add'
         if (this._listeners[type]) {
             this._listeners[type].forEach(listener => {
-                listener.apply(null, data);
+                listener.call(null, data, type);
                 fired.push(listener);
             });
 
@@ -30,7 +30,7 @@ class Mediator {
             this._listeners[typeWithPattern]
                 .filter(listener => !fired.includes(listener))
                 .forEach(listener => {
-                    listener.apply(null, data);
+                    listener.call(null, data, type);
                     fired.push(listener);
                 });
         }
@@ -39,7 +39,7 @@ class Mediator {
         if (this._listeners['*']) {
             this._listeners['*']
                 .filter(listener => !fired.includes(listener))
-                .forEach(listener => listener.apply(null, data));
+                .forEach(listener => listener.call(null, data, type));
         }
     }
 }

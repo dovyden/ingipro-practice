@@ -1,8 +1,17 @@
+import mediator from '../mediator';
+
+
 class Store {
     constructor() {
-        // @fixme remove `console.log`
-        // eslint-disable-next-line
-        console.log('"Store" created');
+        mediator.on('user:logged', this._onUserLogged.bind(this));
+    }
+
+    get user() {
+        return Object.assign({}, this._user);
+    }
+
+    _onUserLogged(user) {
+        this._user = user;
     }
 }
 

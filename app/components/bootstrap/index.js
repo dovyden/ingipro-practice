@@ -1,10 +1,14 @@
-import Layout from 'components/layout';
-import Login from 'components/login';
-import Users from 'components/users';
-import mediator from 'components/mediator'; // instance of component
-import 'components/store';
-import 'components/voice';
-import 'components/websocket';
+// components
+import Layout from '../layout';
+import Login from '../login';
+import mediator from '../mediator'; // instance of component
+import Users from '../users';
+import '../store';
+import '../voice';
+import '../websocket';
+
+// base styles
+import './style.css';
 
 // create instanses of ui components
 const layout = new Layout(document.querySelector('.layout'));

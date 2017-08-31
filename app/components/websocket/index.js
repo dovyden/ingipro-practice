@@ -6,9 +6,6 @@ const MAIN_CHANNEL = 'main';
 
 class WebSocket {
     constructor() {
-        // server events
-        // this.socket = io.connect();
-
         this.socket = io.connect('ws://localhost:3000', {
             path: '/ws',
             transports: ['websocket'],

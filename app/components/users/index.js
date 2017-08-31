@@ -11,11 +11,11 @@ class Users {
     }
 
     hide() {
-        this._domNode.classList.add('hide');
+        this._domNode.classList.add('users_hide');
     }
 
     show() {
-        this._domNode.classList.remove('hide');
+        this._domNode.classList.remove('users_hide');
     }
 }
 

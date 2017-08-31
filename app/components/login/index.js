@@ -1,21 +1,41 @@
+import mediator from '../mediator';
 import './style.css';
 
 
 class Login {
     constructor(domNode) {
-        // @fixme remove `console.log`
-        // eslint-disable-next-line
-        console.log('"Login" created');
-
         this._domNode = domNode;
+
+        this._onFormSubmit = this._onFormSubmit.bind(this);
+
+        domNode.addEventListener('submit', this._onFormSubmit, false); // form
+        domNode.querySelector('.js-login-btn').addEventListener('click', this._onFormSubmit, false); // submit button
     }
 
     hide() {
-        this._domNode.classList.add('hide');
+        this._domNode.classList.add('login_hide');
     }
 
     show() {
-        this._domNode.classList.remove('hide');
+        this._domNode.classList.remove('login_hide');
+    }
+
+    _getLogin() {
+        return this._domNode.querySelector('.js-login-login').value.trim();
+    }
+
+    _onFormSubmit(e) {
+        e.preventDefault();
+
+        const login = this._getLogin();
+
+        // check login
+        if (!login) {
+            return;
+        }
+
+        // request to login
+        mediator.emit('user:login', {login});
     }
 }
 

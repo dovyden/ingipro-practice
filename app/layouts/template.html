@@ -2,16 +2,22 @@
 <html lang="ru">
 <head>
     <meta charset="utf-8">
-    <title>ingipro.com</title>
+    <title>tst</title>
 </head>
-<body>
-    <div class="login hide">
-        <!-- login markup -->
-    </div>
-    <div class="users hide">
+<body class="wrapper">
+    <form class="login login_hide js-login-form">
+        <p class="login__row">
+            <label for="login-login" class="login__label">Login:</label>
+            <input id="login-login" class="login__input js-login-login">
+        </p>
+        <p class="login__row login__row_submit">
+            <input type="button" class="login__submit js-login-btn" value="Join">
+        </p>
+    </form>
+    <div class="users users_hide">
         <!-- users markup -->
     </div>
-    <div class="layout hide">
+    <div class="layout layout_hide">
         <!-- layout markup -->
     </div>
 </body>

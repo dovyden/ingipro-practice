@@ -1,44 +1,52 @@
 'use strict';
 
-// const store = require('./store');
+const randomColor = require('random-color');
+const store = require('./store');
+
+const MAIN_CHANNEL = 'main';
 
 
 module.exports = (socket) => {
+    let user;
+
     /**
-     * handles websocket messsages
+     * handles websocket messages
      */
-    socket.on('message', ({type, payload}) => {
-        // ..
+    socket.on(MAIN_CHANNEL, ({type, payload}) => {
+        switch (type) {
+            case 'user:login':
+                user = {
+                    login: payload.login,
+                    color: randomColor().hexString(),
+                };
 
-        // /**
-        //  * notify others about new user after connection
-        //  * and sync state of new user
-        //  */
-        // socket.emit('message', {
-        //     type: 'conference:sync',
-        //     payload: store.getState()
-        // })
-        // socket.broadcast.emit({
-        //     type: 'user:join',
-        //     payload: {
-        //         id: 'uuid4', // fixme
-        //         login:
-        //     }
-        // });
+                store.addUser(user);
 
-        // eslint-disable-next-line
-        console.log('message:', `${type}:`, payload);
+                socket.emit(MAIN_CHANNEL, {
+                    type: 'user:logged',
+                    payload: user,
+                });
+                socket.emit(MAIN_CHANNEL, {
+                    type: 'conference:sync',
+                    payload: store.getState(),
+                });
+                socket.broadcast.emit(MAIN_CHANNEL, {
+                    type: 'user:join',
+                    payload: user,
+                });
+                break;
+        }
     });
 
     /**
      * handles client disconnect
      */
     socket.on('disconnect', () => {
-        // ..
+        store.removeUser(user);
 
-        // eslint-disable-next-line
-        console.log('user disconected');
+        socket.broadcast.emit(MAIN_CHANNEL, {
+            type: 'user:leave',
+            payload: user,
+        });
     });
-
-    console.log('user connected');
 };

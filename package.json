@@ -6,6 +6,7 @@
   "dependencies": {
     "d3": "4.10.0",
     "express": "4.15.3",
+    "random-color": "1.0.1",
     "serve-static": "1.12.4",
     "socket.io": "2.0.3",
     "voximplant-websdk": "4.1.888"
