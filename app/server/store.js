@@ -16,6 +16,6 @@ module.exports = {
         store.users.push(user);
     },
     removeUser(user) {
-        store.users = store.users.filter(item => item !== user);
+        store.users = store.users.filter(item => item.uuid !== user.uuid);
     },
 };

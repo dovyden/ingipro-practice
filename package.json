@@ -9,6 +9,7 @@
     "random-color": "1.0.1",
     "serve-static": "1.12.4",
     "socket.io": "2.0.3",
+    "uuid": "^3.1.0",
     "voximplant-websdk": "4.1.888"
   },
   "devDependencies": {

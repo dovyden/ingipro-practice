@@ -1,6 +1,7 @@
 'use strict';
 
 const randomColor = require('random-color');
+const uuid = require('uuid/v4');
 const store = require('./store');
 
 const MAIN_CHANNEL = 'main';
@@ -16,6 +17,7 @@ module.exports = (socket) => {
         switch (type) {
             case 'user:login':
                 user = {
+                    uuid: uuid(),
                     login: payload.login,
                     color: randomColor().hexString(),
                 };

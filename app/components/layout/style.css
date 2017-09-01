@@ -1,4 +1,7 @@
 .layout {
+    flex-grow: 1;
+    width: calc(100% - 250px);
+    align-self: stretch;
 }
 
 .layout_hide {
