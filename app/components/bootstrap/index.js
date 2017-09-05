@@ -24,3 +24,21 @@ mediator.on('user:logged', () => {
     layout.show();
     users.show();
 });
+
+// offline server
+mediator.on('conference:reset', () => {
+    users.hide();
+    layout.hide();
+    login.show();
+});
+
+// logger
+mediator.on('*', (data, type) => {
+    const payload = Object.assign({}, data);
+    delete payload.fromServer;
+
+    console.log( // eslint-disable-line
+        data.fromServer ? '[server]' : '[client]',
+        type, '::', payload
+    );
+});

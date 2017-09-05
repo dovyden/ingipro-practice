@@ -11,7 +11,21 @@ class Mediator {
         this._listeners[type].push(listener);
     }
 
-    emit(type, data) {
+    off(type, listener) {
+        // check type
+        if (!this._listeners[type]) {
+            return;
+        }
+
+        const index = this._listeners[type].indexOf(listener);
+
+        // check is listener in list and remove one
+        if (index > -1) {
+            this._listeners[type].splice(index, 1);
+        }
+    }
+
+    emit(type, data = {}) {
         const fired = [];
 
         // type like 'user:add'

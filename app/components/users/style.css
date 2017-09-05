@@ -1,7 +1,7 @@
 .users {
     box-sizing: border-box;
     margin: 0;
-    padding: 20px;
+    padding: 20px 0;
     width: 250px;
     align-self: stretch;
     border-right: #cecece 1px solid;
@@ -16,8 +16,22 @@
 
 /* user */
 
+.users__user {
+    padding: 7px 20px 5px;
+}
+
 .users__user + .users__user {
     margin-top: 10px;
+}
+
+/* active user */
+
+.users__user_active {
+    background: #ffdede url(images/lock.svg) no-repeat 40px 55%;
+}
+
+.users__user_active .users__color {
+    margin-right: 27px
 }
 
 /* color */

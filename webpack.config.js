@@ -90,6 +90,15 @@ function getConfig(env) {
             }, {
                 test: /\.(gif|jpe?g|png)$/,
                 loader: 'url-loader?limit=1&name=images/[hash].[ext]',
+            }, {
+                test: /\.svg$/,
+                use: {
+                    loader: 'svg-url-loader',
+                    options: {
+                        limit: 1024,
+                        stripdeclarations: true,
+                    },
+                },
             }],
         },
         plugins: [

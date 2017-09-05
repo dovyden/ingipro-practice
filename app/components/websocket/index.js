@@ -10,13 +10,14 @@ class WebSocket {
             path: '/ws',
             transports: ['websocket'],
         });
-        this.socket.on(MAIN_CHANNEL, this.onServerMessage.bind(this));
+        this.socket.on(MAIN_CHANNEL, this._onServerMessage);
+        this.socket.on('disconnect', this._onDisconnect);
 
         // client events
-        mediator.on('*', this.onMediatorMessage.bind(this));
+        mediator.on('*', this._onMediatorMessage.bind(this));
     }
 
-    onMediatorMessage(data, type) {
+    _onMediatorMessage(data, type) {
         // skip messages from server
         if (data.fromServer) {
             return;
@@ -29,12 +30,22 @@ class WebSocket {
         });
     }
 
-    onServerMessage(message) {
-        const {type, payload} = message;
+    _onServerMessage(message) {
+        const {
+            type,
+            payload = {},
+        } = message;
+
         payload.fromServer = true;
 
         // sync state
         mediator.emit(type, payload);
+    }
+
+    _onDisconnect() {
+        mediator.emit('conference:reset', {
+            fromServer: true,
+        });
     }
 }
 

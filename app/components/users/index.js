@@ -6,16 +6,24 @@ class Users {
     constructor(domNode) {
         this._domNode = domNode;
 
+        this._users = {};
+
         const onUserJoin = this._onUserJoin.bind(this);
 
-        mediator.on('user:logged', onUserJoin);
+        mediator.on('layout:unlock', this._onLayoutUnlock.bind(this));
+        mediator.on('lock:accept', this._onLayoutLock.bind(this));
+        mediator.on('lock:release', this._onLayoutUnlock.bind(this));
+        mediator.on('conference:sync', this._onConferenceSync.bind(this));
         mediator.on('user:join', onUserJoin);
         mediator.on('user:leave', this._onUserLeave.bind(this));
-        mediator.on('conference:sync', this._onConferenceSync.bind(this));
+        mediator.on('user:logged', onUserJoin);
     }
 
     hide() {
         this._domNode.classList.add('users_hide');
+
+        // reset user list
+        this._resetList();
     }
 
     show() {
@@ -29,34 +37,54 @@ class Users {
 
         const li = document.createElement('li');
         li.classList.add('users__user');
-        li.classList.add(`users__user_${user.uuid}`);
         li.appendChild(span);
         li.appendChild(document.createTextNode(user.login));
 
         return li;
     }
 
-    _onUserJoin(user) {
-        this._domNode.appendChild(this._createUserEntry(user));
+    _resetList() {
+        Object.values(this._users).forEach(userNode => userNode.remove());
     }
 
-    _onUserLeave(user) {
-        const li = this._domNode.querySelector(`.users__user_${user.uuid}`);
-        if (!li) {
-            return;
-        }
+    _onLayoutLock(user) {
+        this._users[user.uuid].classList.add('users__user_active');
+    }
 
-        this._domNode.removeChild(li);
+    _onLayoutUnlock(user) {
+        this._users[user.uuid].classList.remove('users__user_active');
     }
 
     _onConferenceSync({users}) {
+        // drop items
+        this._resetList();
+
+        // create list
         const df = document.createDocumentFragment();
         users.forEach(user => {
-            df.appendChild(this._createUserEntry(user));
+            const userNode = this._createUserEntry(user);
+            this._users[user.uuid] = userNode;
+
+            df.appendChild(userNode);
         });
 
-        this._domNode.innerHTML = ''; // drop items
+        // append list
         this._domNode.appendChild(df);
+    }
+
+    _onUserJoin(user) {
+        const userNode = this._createUserEntry(user);
+        this._users[user.uuid] = userNode;
+
+        this._domNode.appendChild(userNode);
+    }
+
+    _onUserLeave(user) {
+        const userNode = this._users[user.uuid];
+
+        if (userNode) {
+            userNode.remove();
+        }
     }
 }
 
