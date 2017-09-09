@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<svg width="5.625px"
+     height="20px"
+     viewBox="0.0 0 576.0 2048"
+     xmlns="http://www.w3.org/2000/svg"
+     version="1.1"
+     preserveAspectRatio="xMidYMid meet"
+     zoomAndPan="magnify"
+>
+    <g transform="scale(1,-1)">
+        <path d="M576-1024c0-17.333-6.333-32.333-19-45l-448-448c-12.667-12.667-27.667-19-45-19s-32.333,6.333-45,19s-19,27.667-19,45v896   c0,17.333,6.333,32.333,19,45s27.667,19,45,19s32.333-6.333,45-19l448-448C569.667-991.667,576-1006.667,576-1024z"/>
+    </g>
+</svg>

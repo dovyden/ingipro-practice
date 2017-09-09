@@ -1,3 +1,5 @@
+/* global NODE_ENV */
+
 // components
 import Layout from '../layout';
 import Login from '../login';
@@ -33,12 +35,14 @@ mediator.on('conference:reset', () => {
 });
 
 // logger
-mediator.on('*', (data, type) => {
-    const payload = Object.assign({}, data);
-    delete payload.fromServer;
+if (NODE_ENV !== 'production') {
+    mediator.on('*', (data, type) => {
+        const payload = Object.assign({}, data);
+        delete payload.fromServer;
 
-    console.log( // eslint-disable-line
-        data.fromServer ? '[server]' : '[client]',
-        type, '::', payload
-    );
-});
+        console.log( // eslint-disable-line
+            data.fromServer ? '[server]' : '[client]',
+            type, '::', payload
+        );
+    });
+}
