@@ -1,6 +1,4 @@
 import throttle from 'lodash/throttle';
-// import Marks from '../marks';
-// import Viewer from '../viewer';
 import mediator from '../mediator';
 import store from '../store';
 import {

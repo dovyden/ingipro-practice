@@ -1,4 +1,6 @@
 import uuid from 'uuid/v4';
+import Marks from '../marks';
+import Viewer from '../viewer';
 
 const CLASS_CELL = 'layout__cell';
 export const CLASS_CONTROL = 'layout__contol';
@@ -26,7 +28,7 @@ export class Cell {
      * @param {<string,Object>} data.marks
      * @param {<string,Object>} data.viewer
      */
-    constructor(options = {}, data = {}) {
+    constructor(options = {}, data = null) {
         const {
             type = 'cell',
             uuid: id = uuid(),
@@ -55,16 +57,38 @@ export class Cell {
             this.direction = parent.direction;
         }
 
-        // dom node
+        // create dom
         this._render(empty);
 
         // children
-        this.children = children.map(child => {
-            const cell = new Cell(Object.assign({}, child, {parent: this}), data);
-            this.node.appendChild(cell.node);
+        if (type === 'cell') {
+            this.children = [];
 
-            return cell;
-        });
+            // marks & viewer
+            if (!empty) {
+                this.marks = new Marks({
+                    uuid: id,
+                    domNode: this.node,
+                    data: data && data.marks[id],
+                });
+                this.viewer = new Viewer({
+                    uuid: id,
+                    domNode: this.node,
+                    data: data && data.viewer[id],
+                });
+            }
+        } else {
+            this.children = children.map(child => {
+                const cell = new Cell(Object.assign({}, child, {parent: this}), data);
+                this.node.appendChild(cell.node);
+
+                return cell;
+            });
+
+            // marks & viewer
+            this.marks = null;
+            this.viewer = null;
+        }
 
         // update size (flex basis)
         this.basis = basis;
@@ -79,6 +103,16 @@ export class Cell {
         // remove children
         this.children.forEach(child => child._destroy(false));
         this.children = null;
+
+        // remove marks & viewer
+        if (this.marks) {
+            this.marks.remove();
+            this.marks = null;
+        }
+        if (this.viewer) {
+            this.viewer.remove();
+            this.viewer = null;
+        }
 
         // remove dom
         this.node.__cell = null;
@@ -341,6 +375,12 @@ export class Cell {
             this.node.appendChild(child);
         });
 
+        // marks & viewer
+        this.marks = source.marks;
+        source.marks = null;
+        this.viewer = source.viewer;
+        source.viewer = null;
+
         // meta
         this.type = 'cell';
         this.direction = this.parent ? this.parent.direction : DEFAULT_DIRECTION;
@@ -400,6 +440,12 @@ export class Cell {
         Array.from(this.node.children).forEach(child => {
             target.node.appendChild(child);
         });
+
+        // marks & viewer
+        target.marks = this.marks;
+        this.marks = null;
+        target.viewer = this.viewer;
+        this.viewer = null;
 
         // add children to dom
         const df = document.createDocumentFragment();
