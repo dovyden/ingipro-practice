@@ -4,13 +4,14 @@ import mediator from '../mediator';
 class Store {
     constructor() {
         this._lock = false;
-        this._user = null;
         this._lockUser = null;
+        this._user = null;
 
-        mediator.on('user:logged', this._onUserLogged.bind(this));
+        mediator.on('conference:reset', this._onConferenceReset.bind(this));
         mediator.on('layout:unlock', this._onLayoutUnlock.bind(this));
         mediator.on('lock:accept', this._onLayoutLock.bind(this));
         mediator.on('lock:release', this._onLayoutUnlock.bind(this));
+        mediator.on('user:logged', this._onUserLogged.bind(this));
     }
 
     get lock() {
@@ -18,11 +19,17 @@ class Store {
     }
 
     get lockByMe() {
-        return this._lock && this._user.uuid === this._lockUser.uuid;
+        return this._lock && this._user && this._user.uuid === this._lockUser.uuid;
     }
 
     get user() {
-        return Object.assign({}, this._user);
+        return this._user ? Object.assign({}, this._user) : null;
+    }
+
+    _onConferenceReset() {
+        this._lock = false;
+        this._lockUser = null;
+        this._user = null;
     }
 
     _onUserLogged(data) {

@@ -9,13 +9,15 @@ const MAIN_CHANNEL = 'main';
 
 
 function debug(title, type, data) {
-    /* eslint-disable no-console */
-    console.log(`\n${title}`, type);
-    console.log(util.inspect(data, {
-        colors: true,
-        depth: null,
-    }));
-    /* eslint-enable no-console */
+    if (process.env.NODE_ENV !== 'production') {
+        /* eslint-disable no-console */
+        console.log(`\n${title}`, type);
+        console.log(util.inspect(data, {
+            colors: true,
+            depth: null,
+        }));
+        /* eslint-enable no-console */
+    }
 }
 
 
@@ -80,6 +82,24 @@ module.exports = (socket) => {
 
                 if (status) {
                     sendToOthers('lock:release', user);
+                }
+
+                break;
+            }
+
+            /*
+             * layout
+             */
+            case 'layout:change': {
+                // try update layout
+                if (store.isLockedBy(user)) {
+                    store.updateLayout(payload);
+
+                    sendToOthers('layout:change', payload);
+
+                // something is wrong, resync client
+                } else {
+                    sendToUser('conference:sync', store.getState());
                 }
 
                 break;

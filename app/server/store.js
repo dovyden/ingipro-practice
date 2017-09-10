@@ -1,19 +1,20 @@
 'use strict';
 
 const store = {
+    layout: null,
     lock: null,
     users: [],
 };
 
 module.exports = {
-    _store: store,
+    _store: Object.assign({}, store),
 
     getState() {
         return this._store;
     },
 
     reset() {
-        this._store = store;
+        this._store = Object.assign({}, store);
 
         return this;
     },
@@ -23,10 +24,7 @@ module.exports = {
      */
 
     addUser(user) {
-        this._store.users = [
-            ...this._store.users,
-            user,
-        ];
+        this._store.users.push(user);
 
         return this;
     },
@@ -45,6 +43,12 @@ module.exports = {
     /*
      * control (un)lock
      */
+
+    isLockedBy(user) {
+        const {lock} = this._store;
+
+        return lock && lock.uuid === user.uuid;
+    },
 
     lock(user) {
         const {lock} = this._store;
@@ -68,5 +72,13 @@ module.exports = {
         this._store.lock = null;
 
         return true;
+    },
+
+    /*
+     * layout
+     */
+
+    updateLayout(layout) {
+        this._store.layout = layout;
     },
 };

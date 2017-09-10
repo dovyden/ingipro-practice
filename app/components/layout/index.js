@@ -70,36 +70,29 @@ class Layout {
 
         // reset to base layout
         if (this._layout) {
-            this._layout.destroy();
+            this._layout.remove();
             this._layout = null;
         }
     }
 
     _createBaseLayout() {
         // create cell
-        this._layout = new Cell(null, 100, false, DEFAULT_CELL_UUID);
+        this._layout = new Cell({uuid: DEFAULT_CELL_UUID});
 
         // add cell to dom
         this._domNode.appendChild(this._layout.node);
     }
 
-    /**
-     * updates layout on change/sync event
-     *
-     * @param {Object} layout - layout data
-     * @param {Object} data - sync data
-     */
-    _updateLayout(layout, data = {}) {
-        // @todo
-    }
+    _syncLayout(layout, data) {
+        // recreate layout
+        if (this._layout.uuid !== layout.uuid) {
+            this._layout.remove();
+            this._layout = new Cell(layout, data);
 
-    /**
-     * serializes layout
-     *
-     * @return {Object}
-     */
-    _serializeLayout() {
-        return this._layout.serialize();
+        // create viewer and marks
+        } else {
+            this._layout.sync(layout, data);
+        }
     }
 
     /*
@@ -107,7 +100,12 @@ class Layout {
      */
 
     _onConferenceSync(data) {
-        this._updateLayout(data.layout, data);
+        // check login and layout data
+        if (!store.user || !data.layout) {
+            return;
+        }
+
+        this._syncLayout(data.layout, data);
     }
 
     _onContextMenu(e) {
@@ -129,16 +127,16 @@ class Layout {
     }
 
     _onLayoutChange(data) {
-        // check own message
-        if (!data.fromServer) {
+        // check login and is it own message
+        if (!store.user || !data.fromServer) {
             return;
         }
 
-        this._updateLayout(data);
+        this._syncLayout(data);
     }
 
     _onLayoutLock(user) {
-        const lock = store.user.uuid === user.uuid;
+        const lock = store.user && store.user.uuid === user.uuid;
         this._lock = lock;
 
         // switch to interactive mode
@@ -264,6 +262,7 @@ class Layout {
         this._dnd = null;
     }
 
+    /* eslint-disable complexity */
     /**
      * handles movements of controls
      */
@@ -377,7 +376,6 @@ class Layout {
 
                     // update drag and drop meta
                     this._dnd.cell = null;
-                    return;
 
                 // remove sibling cell
                 } else if (siblingBasis <= MIN_BASIS) {
@@ -385,12 +383,15 @@ class Layout {
 
                     // update drag and drop meta
                     this._dnd.cell = null;
-                    return;
 
                 // change cell size
                 } else {
                     cell.basis -= deltaBasis;
                     sibling.basis += deltaBasis;
+
+                    // update drag and drop meta
+                    this._dnd.cellBasis = axisY ? cell.node.clientHeight : cell.node.clientWidth;
+                    this._dnd.start = end;
                 }
             } else {
                 const basis = cellBasis + delta;
@@ -402,7 +403,6 @@ class Layout {
 
                     // update drag and drop meta
                     this._dnd.cell = null;
-                    return;
 
                 // remove sibling cell
                 } else if (siblingBasis <= MIN_BASIS) {
@@ -410,20 +410,23 @@ class Layout {
 
                     // update drag and drop meta
                     this._dnd.cell = null;
-                    return;
 
                 // change cell size
                 } else {
                     cell.basis += deltaBasis;
                     sibling.basis -= deltaBasis;
+
+                    // update drag and drop meta
+                    this._dnd.cellBasis = axisY ? cell.node.clientHeight : cell.node.clientWidth;
+                    this._dnd.start = end;
                 }
             }
-
-            // update drag and drop meta
-            this._dnd.cellBasis = axisY ? cell.node.clientHeight : cell.node.clientWidth;
-            this._dnd.start = end;
         }
+
+        // notify others
+        mediator.emit('layout:change', this._layout.serialize());
     }
+    /* eslint-enable complexity */
 }
 
 export default Layout;
